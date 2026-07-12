@@ -549,33 +549,54 @@ function initFallbackMap() {
 }
 
 // ============================================
-// 7. 数据故事
+// 7. 数据故事（Tableau 风格标签页）
 // ============================================
 let storyChartInstance = null;
+let currentStoryIndex = 0;
+
 function initStoryCharts() {
-    const nodesContainer = document.getElementById('story-nodes');
-    const contentContainer = document.getElementById('story-content');
     storyChartInstance = registerChart(echarts.init(document.getElementById('story-chart')));
 
+    // 生成标签页
+    const tabsContainer = document.getElementById('storyTabs');
+    tabsContainer.innerHTML = '';
     storyNodes.forEach((node, i) => {
-        const div = document.createElement('div');
-        div.className = 'story-node' + (i === 0 ? ' active' : '');
-        div.innerHTML = '<div class="story-node-dot"></div><div class="story-node-label">' + node.period + '</div>';
-        div.addEventListener('click', () => showStory(i));
-        nodesContainer.appendChild(div);
+        const tab = document.createElement('button');
+        tab.className = 'story-tab' + (i === 0 ? ' active' : '');
+        tab.textContent = node.tabText || node.title;
+        tab.addEventListener('click', () => showStory(i));
+        tabsContainer.appendChild(tab);
     });
+
+    // 左右切换按钮
+    document.getElementById('storyPrevBtn').addEventListener('click', () => {
+        if (currentStoryIndex > 0) showStory(currentStoryIndex - 1);
+    });
+    document.getElementById('storyNextBtn').addEventListener('click', () => {
+        if (currentStoryIndex < storyNodes.length - 1) showStory(currentStoryIndex + 1);
+    });
+
     showStory(0);
 }
 
 function showStory(index) {
+    currentStoryIndex = index;
     const node = storyNodes[index];
-    const content = document.getElementById('story-content');
-    content.innerHTML = '<h3>' + node.title + '</h3><p class="period">' + node.period + '</p><p>' + node.content + '</p><div class="highlight">' + node.highlight + '</div>';
 
-    document.querySelectorAll('.story-node').forEach((n, i) => {
-        n.classList.toggle('active', i === index);
+    // 更新标签页状态
+    document.querySelectorAll('.story-tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
     });
 
+    // 更新文本内容
+    const textContent = document.getElementById('storyTextContent');
+    textContent.innerHTML =
+        '<h3>' + node.title + '</h3>' +
+        '<p class="story-period">' + node.period + '</p>' +
+        '<p class="story-desc">' + node.content + '</p>' +
+        '<div class="story-highlight">' + node.highlight + '</div>';
+
+    // 更新图表
     const startYear = parseInt(node.period.split('-')[0]);
     const endYear = parseInt(node.period.split('-')[1]);
     const filtered = outputValueData.filter(d => d.year >= startYear && d.year <= endYear);

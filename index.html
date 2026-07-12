@@ -171,19 +171,20 @@
 
     <!-- 数据故事 -->
     <section id="story" class="section">
-        <h2 class="section-title">数据故事：云南农业的五个阶段</h2>
+        <h2 class="section-title">从"大农业"到"强农业"——云南农林牧渔业1978-2024年演进之路</h2>
         <div class="story-container">
-            <div class="story-nav">
-                <div class="story-timeline">
-                    <div class="timeline-line"></div>
-                    <div class="timeline-nodes" id="story-nodes"></div>
+            <!-- Tableau 风格故事标签页 -->
+            <div class="story-tabs-wrapper">
+                <button class="story-tab-btn story-tab-prev" id="storyPrevBtn">&#10094;</button>
+                <div class="story-tabs" id="storyTabs"></div>
+                <button class="story-tab-btn story-tab-next" id="storyNextBtn">&#10095;</button>
+            </div>
+            <!-- 故事内容区 -->
+            <div class="story-display">
+                <div class="story-text-content" id="storyTextContent"></div>
+                <div class="story-chart-area">
+                    <div id="story-chart" class="chart"></div>
                 </div>
-            </div>
-            <div class="story-content" id="story-content">
-                <!-- Dynamic content -->
-            </div>
-            <div class="story-chart-container">
-                <div id="story-chart" class="chart"></div>
             </div>
         </div>
     </section>

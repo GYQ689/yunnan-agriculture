@@ -5,3 +5,6 @@ twbx_extracted/
 node_modules/
 .DS_Store
 .vercel
+*.png
+extract_data.py
+merge.js

@@ -49,7 +49,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // 只初始化当前可见的概览页面
-    initSection('overview');
+    // 检查 URL hash，激活对应的 section
+    const hash = window.location.hash.substring(1) || 'overview';
+    const targetSection = document.getElementById(hash);
+    if (targetSection && targetSection.classList.contains('section')) {
+        sections.forEach(s => s.classList.remove('active'));
+        targetSection.classList.add('active');
+        navLinks.forEach(l => {
+            l.classList.toggle('active', l.getAttribute('href') === '#' + hash);
+        });
+        initSection(hash);
+    } else {
+        initSection('overview');
+    }
+
+    // 监听浏览器前进后退
+    window.addEventListener('hashchange', function() {
+        const h = window.location.hash.substring(1);
+        const sec = document.getElementById(h);
+        if (sec) {
+            sections.forEach(s => s.classList.remove('active'));
+            sec.classList.add('active');
+            navLinks.forEach(l => {
+                l.classList.toggle('active', l.getAttribute('href') === '#' + h);
+            });
+            initSection(h);
+        }
+    });
 });
 
 window.addEventListener('resize', () => {

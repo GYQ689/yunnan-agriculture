@@ -186,6 +186,11 @@ body {
     min-width: 0;
 }
 
+.chart-container.half .chart {
+    height: 400px;
+    min-height: 350px;
+}
+
 .chart-row {
     display: flex;
     gap: 20px;

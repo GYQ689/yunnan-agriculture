@@ -148,8 +148,12 @@ function initTrendCharts() {
 // ============================================
 let pieChartInstance = null;
 function initStructureCharts() {
-    pieChartInstance = registerChart(echarts.init(document.getElementById('structure-pie')));
-    updatePie(2024);
+    // 延迟初始化饼图，确保容器有正确尺寸
+    setTimeout(function() {
+        const pieDiv = document.getElementById('structure-pie');
+        pieChartInstance = registerChart(echarts.init(pieDiv));
+        updatePie(2024);
+    }, 100);
 
     const slider = document.getElementById('year-slider');
     const display = document.getElementById('year-display');

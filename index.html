@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南农业1978-2024演进之路 - 数据可视化</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">云南农业演进之路</div>
+        <div class="nav-links">
+            <a href="#overview" class="nav-link active">概览</a>
+            <a href="#trend" class="nav-link">产值趋势</a>
+            <a href="#structure" class="nav-link">产业结构</a>
+            <a href="#products" class="nav-link">农产品产量</a>
+            <a href="#region" class="nav-link">州市对比</a>
+            <a href="#map" class="nav-link">云南地图</a>
+            <a href="#story" class="nav-link">数据故事</a>
+        </div>
+    </nav>
+
+    <!-- 1. 概览 -->
+    <section id="overview" class="section active">
+        <div class="hero">
+            <h1>云南农业1978-2024演进之路</h1>
+            <p class="subtitle">从红土地到绿色经济 — 46年农业现代化历程的数据叙事</p>
+            <div class="hero-stats">
+                <div class="stat-card"><div class="stat-number">6847</div><div class="stat-unit">亿元</div><div class="stat-label">2024年农林牧渔总产值</div></div>
+                <div class="stat-card"><div class="stat-number">171</div><div class="stat-unit">倍</div><div class="stat-label">46年产值增长</div></div>
+                <div class="stat-card"><div class="stat-number">1993</div><div class="stat-unit">万吨</div><div class="stat-label">2024年粮食总产量</div></div>
+                <div class="stat-card"><div class="stat-number">16</div><div class="stat-unit">个州市</div><div class="stat-label">覆盖全省</div></div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div id="overview-line" class="chart"></div>
+        </div>
+    </section>
+
+    <!-- 2. 产值趋势（对应：1.分项产值趋势 + 2.产值指数趋势） -->
+    <section id="trend" class="section">
+        <h2 class="section-title">农林牧渔业总产值趋势</h2>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>1. 各产业产值变化趋势（1978-2024）</h3>
+                <div id="trend-line" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>2. 产值指数趋势（上年=100）</h3>
+                <div id="index-line" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>粮食产量变化趋势（1978-2024）</h3>
+                <div id="grain-line" class="chart"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 产业结构（对应：3.年度结构饼图 + 4.产业构成变化柱状图） -->
+    <section id="structure" class="section">
+        <h2 class="section-title">产业结构分析</h2>
+        <div class="controls">
+            <label>选择年份：</label>
+            <input type="range" id="year-slider" min="1978" max="2024" value="2024" step="1">
+            <span id="year-display">2024年</span>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container half">
+                <h3>3. 年度结构饼图</h3>
+                <div id="structure-pie" class="chart"></div>
+            </div>
+            <div class="chart-container half">
+                <h3>4. 产业构成变化柱状图</h3>
+                <div id="structure-bar" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>各产业产值占比变化趋势</h3>
+                <div id="structure-percent" class="chart"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 农产品产量 -->
+    <section id="products" class="section">
+        <h2 class="section-title">主要农产品产量</h2>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>主要农产品产量变化</h3>
+                <div id="products-bar" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>高原特色农产品产量趋势（2015-2024）</h3>
+                <div id="specialty-line" class="chart"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. 州市对比（对应：5.州市产值排名 + 6.州市产业构成气泡图 + 7.各州市产值构成） -->
+    <section id="region" class="section">
+        <h2 class="section-title">各州市农业对比</h2>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>5. 各州市农林牧渔总产值排名（2024年）</h3>
+                <div id="region-bar" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>6. 各州市产业构成气泡图</h3>
+                <div id="region-bubble" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>7. 各州市产值构成（堆叠柱状图）</h3>
+                <div id="region-composition" class="chart"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>各州市产业结构对比（雷达图）</h3>
+                <div id="region-radar" class="chart"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. 云南省填充地图（对应：8.云南省填充地图） -->
+    <section id="map" class="section">
+        <h2 class="section-title">云南省农业地图</h2>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>8. 云南省各州市农林牧渔总产值填充地图（2024年）</h3>
+                <div id="yunnan-map" class="chart" style="height:600px;"></div>
+            </div>
+        </div>
+        <div class="chart-row">
+            <div class="chart-container">
+                <h3>各州市农业产值地理分布</h3>
+                <div id="yunnan-scatter" class="chart" style="height:500px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. 数据故事（对应：故事仪表盘） -->
+    <section id="story" class="section">
+        <h2 class="section-title">数据故事：从"大农业"到"强农业"</h2>
+        <div class="story-container">
+            <div class="story-nav">
+                <div class="story-timeline">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-nodes" id="story-nodes"></div>
+                </div>
+            </div>
+            <div class="story-content" id="story-content"></div>
+            <div class="story-chart-container">
+                <div id="story-chart" class="chart"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>数据来源：云南省统计年鉴、国家统计局、云南省国民经济和社会发展统计公报</p>
+        <p>云南农业1978-2024演进之路 · 数据可视化系统</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

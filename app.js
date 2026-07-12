@@ -16,17 +16,24 @@ const initializedSections = new Set();
 function initSection(sectionId) {
     if (initializedSections.has(sectionId)) return;
     initializedSections.add(sectionId);
-    switch(sectionId) {
-        case 'overview': initOverviewChart(); break;
-        case 'trend': initTrendCharts(); break;
-        case 'structure': initStructureCharts(); break;
-        case 'products': initProductCharts(); break;
-        case 'region': initRegionCharts(); break;
-        case 'map': initMapCharts(); break;
-        case 'story': initStoryCharts(); break;
-    }
-    setTimeout(resizeAllCharts, 100);
-    setTimeout(resizeAllCharts, 300);
+    // 确保容器可见后再初始化，使用 requestAnimationFrame + 延迟
+    requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+            switch(sectionId) {
+                case 'overview': initOverviewChart(); break;
+                case 'trend': initTrendCharts(); break;
+                case 'structure': initStructureCharts(); break;
+                case 'products': initProductCharts(); break;
+                case 'region': initRegionCharts(); break;
+                case 'map': initMapCharts(); break;
+                case 'story': initStoryCharts(); break;
+            }
+            // 多次 resize 确保容器尺寸正确
+            setTimeout(resizeAllCharts, 50);
+            setTimeout(resizeAllCharts, 200);
+            setTimeout(resizeAllCharts, 500);
+        });
+    });
 }
 
 // ============================================
@@ -80,6 +87,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.addEventListener('resize', () => {
     setTimeout(resizeAllCharts, 100);
+});
+
+// 监听 section 可见性变化，自动 resize 图表
+const sectionObserver = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'class') {
+            const target = mutation.target;
+            if (target.classList.contains('active')) {
+                setTimeout(resizeAllCharts, 100);
+                setTimeout(resizeAllCharts, 300);
+            }
+        }
+    });
+});
+document.querySelectorAll('.section').forEach(function(section) {
+    sectionObserver.observe(section, { attributes: true });
 });
 
 // ============================================
@@ -404,18 +427,43 @@ function initRegionCharts() {
 // ============================================
 // 6. 云南省地图（新增）
 // ============================================
-function initMapCharts() {
-    fetch('https://geo.datav.aliyun.com/areas_v3/bound/530000_full.json')
-        .then(r => r.json())
+let yunnanGeoJson = null;
+const MAP_SOURCES = [
+    'https://geo.datav.aliyun.com/areas_v3/bound/530000_full.json',
+    'https://raw.githubusercontent.com/echarts-maps/echarts-map-json/master/yunnan.json',
+    'https://cdn.jsdelivr.net/gh/apache/echarts-website@asf-site/examples/data/asset/geo/yunnan.json'
+];
+
+function fetchMapData(sourceIndex) {
+    if (sourceIndex >= MAP_SOURCES.length) {
+        console.error('所有地图数据源均加载失败');
+        initFallbackMap();
+        return;
+    }
+    fetch(MAP_SOURCES[sourceIndex])
+        .then(r => {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        })
         .then(geoJson => {
+            yunnanGeoJson = geoJson;
             echarts.registerMap('yunnan', geoJson);
             initFilledMap();
             initScatterMap();
         })
         .catch(err => {
-            console.error('地图数据加载失败', err);
-            initFallbackMap();
+            console.warn('地图源 ' + sourceIndex + ' 加载失败:', err);
+            fetchMapData(sourceIndex + 1);
         });
+}
+
+function initMapCharts() {
+    // 显示加载提示
+    const mapDiv = document.getElementById('yunnan-map');
+    const scatterDiv = document.getElementById('yunnan-scatter');
+    if (mapDiv) mapDiv.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">地图加载中...</div>';
+    if (scatterDiv) scatterDiv.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">地图加载中...</div>';
+    fetchMapData(0);
 }
 
 function initFilledMap() {

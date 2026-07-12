@@ -1,5 +1,5 @@
 // ============================================
-// 全局图表注册表 - 解决 display:none 初始化问题
+// 全局图表注册表 + 懒加载
 // ============================================
 const chartInstances = [];
 function registerChart(chart) {
@@ -8,6 +8,25 @@ function registerChart(chart) {
 }
 function resizeAllCharts() {
     chartInstances.forEach(c => { try { c.resize(); } catch(e) {} });
+}
+
+// 懒加载：记录每个 section 是否已初始化
+const initializedSections = new Set();
+
+function initSection(sectionId) {
+    if (initializedSections.has(sectionId)) return;
+    initializedSections.add(sectionId);
+    switch(sectionId) {
+        case 'overview': initOverviewChart(); break;
+        case 'trend': initTrendCharts(); break;
+        case 'structure': initStructureCharts(); break;
+        case 'products': initProductCharts(); break;
+        case 'region': initRegionCharts(); break;
+        case 'map': initMapCharts(); break;
+        case 'story': initStoryCharts(); break;
+    }
+    setTimeout(resizeAllCharts, 100);
+    setTimeout(resizeAllCharts, 300);
 }
 
 // ============================================
@@ -25,23 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetId = this.getAttribute('href').substring(1);
             sections.forEach(s => s.classList.remove('active'));
             document.getElementById(targetId).classList.add('active');
-            setTimeout(resizeAllCharts, 50);
-            setTimeout(resizeAllCharts, 200);
-            setTimeout(resizeAllCharts, 500);
+            initSection(targetId);
         });
     });
 
-    // 初始化所有图表
-    initOverviewChart();
-    initTrendCharts();
-    initStructureCharts();
-    initProductCharts();
-    initRegionCharts();
-    initMapCharts();
-    initStoryCharts();
-
-    setTimeout(resizeAllCharts, 100);
-    setTimeout(resizeAllCharts, 500);
+    // 只初始化当前可见的概览页面
+    initSection('overview');
 });
 
 window.addEventListener('resize', () => {
@@ -281,23 +289,29 @@ function initRegionCharts() {
     });
 
     const bubbleChart = registerChart(echarts.init(document.getElementById('region-bubble')));
+    const bubbleData = prefectureData.map(d => {
+        const agriPct = +((d.agriculture / d.total) * 100).toFixed(1);
+        const animalPct = +((d.animal / d.total) * 100).toFixed(1);
+        const forestryPct = +((d.forestry / d.total) * 100).toFixed(1);
+        return [agriPct, animalPct, d.total, d.name, forestryPct];
+    });
     bubbleChart.setOption({
         title: { text: '各州市产业构成气泡图', left: 'center', textStyle: { fontSize: 15 } },
         tooltip: { trigger: 'item', formatter: function(p) {
-            return p.data[3] + '<br/>农业占比: ' + p.data[0] + '%<br/>牧业占比: ' + p.data[1] + '%<br/>总产值: ' + p.data[2] + '亿元';
+            return p.data[3] + '<br/>农业占比: ' + p.data[0] + '%<br/>牧业占比: ' + p.data[1] + '%<br/>林业占比: ' + p.data[4] + '%<br/>总产值: ' + p.data[2] + '亿元';
         }},
-        grid: { left: 70, right: 30, top: 60, bottom: 50 },
-        xAxis: { name: '农业占比(%)', nameLocation: 'center', nameGap: 30 },
-        yAxis: { name: '牧业占比(%)', nameLocation: 'center', nameGap: 40 },
+        grid: { left: 80, right: 40, top: 60, bottom: 60 },
+        xAxis: { name: '农业占比(%)', nameLocation: 'center', nameGap: 30, min: 30, max: 75, splitLine: { show: true, lineStyle: { type: 'dashed' } } },
+        yAxis: { name: '牧业占比(%)', nameLocation: 'center', nameGap: 45, min: 15, max: 45, splitLine: { show: true, lineStyle: { type: 'dashed' } } },
         series: [{
-            type: 'scatter', symbolSize: function(d) { return Math.sqrt(d[2]) * 2; },
-            data: prefectureData.map(d => {
-                const agriPct = +((d.agriculture / d.total) * 100).toFixed(1);
-                const animalPct = +((d.animal / d.total) * 100).toFixed(1);
-                return [agriPct, animalPct, d.total, d.name];
-            }),
-            label: { show: true, formatter: function(p) { return p.data[3].replace('市','').replace('州',''); }, fontSize: 10 },
-            itemStyle: { color: '#5470c6', opacity: 0.7 }
+            type: 'scatter',
+            symbolSize: function(d) { return Math.sqrt(d[2]) * 1.5; },
+            data: bubbleData,
+            label: { show: true, formatter: function(p) { return p.data[3].replace('市','').replace('州',''); }, fontSize: 10, position: 'inside' },
+            itemStyle: { color: function(params) {
+                var colors = ['#5470c6','#91cc75','#fac858','#ee6666','#73c0de','#3ba272','#fc8452','#9a60b4','#ea7ccc','#5470c6','#91cc75','#fac858','#ee6666','#73c0de','#3ba272','#fc8452'];
+                return colors[params.dataIndex % colors.length];
+            }, opacity: 0.75 }
         }]
     });
 

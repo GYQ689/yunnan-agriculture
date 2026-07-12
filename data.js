@@ -125,24 +125,24 @@ const mainProductsData = [
   { year: 2024, grain: 1993.46, oil: 71.22, sugar: 255.80, tea: 58.62, tobacco: 32.50 }
 ];
 
-// 各州市农业总产值（2024年）单位：亿元
+// 各州市农业总产值（2023年）单位：亿元
 const prefectureData = [
-  { name: '昆明市', total: 680.50, agriculture: 360.20, forestry: 75.80, animal: 205.30, fishery: 13.50, service: 25.70 },
-  { name: '曲靖市', total: 820.30, agriculture: 445.80, forestry: 60.50, animal: 278.20, fishery: 16.20, service: 19.60 },
-  { name: '玉溪市', total: 445.60, agriculture: 268.30, forestry: 37.20, animal: 116.80, fishery: 9.10, service: 14.20 },
-  { name: '保山市', total: 545.80, agriculture: 310.50, forestry: 50.80, animal: 158.30, fishery: 10.80, service: 15.40 },
-  { name: '昭通市', total: 645.30, agriculture: 362.80, forestry: 44.20, animal: 214.50, fishery: 5.90, service: 17.90 },
-  { name: '丽江市', total: 298.50, agriculture: 162.30, forestry: 40.20, animal: 81.50, fishery: 4.00, service: 10.50 },
-  { name: '普洱市', total: 510.20, agriculture: 280.50, forestry: 72.30, animal: 130.80, fishery: 8.60, service: 18.00 },
-  { name: '临沧市', total: 520.50, agriculture: 290.30, forestry: 58.50, animal: 144.20, fishery: 6.80, service: 20.70 },
-  { name: '楚雄州', total: 488.30, agriculture: 268.50, forestry: 47.20, animal: 148.30, fishery: 6.10, service: 18.20 },
-  { name: '红河州', total: 730.20, agriculture: 405.30, forestry: 55.20, animal: 228.50, fishery: 19.50, service: 21.70 },
-  { name: '文山州', total: 478.50, agriculture: 268.30, forestry: 40.20, animal: 148.50, fishery: 4.70, service: 16.80 },
-  { name: '西双版纳州', total: 342.30, agriculture: 205.80, forestry: 44.50, animal: 75.80, fishery: 5.50, service: 10.70 },
-  { name: '大理州', total: 582.50, agriculture: 320.50, forestry: 58.00, animal: 172.30, fishery: 11.00, service: 20.70 },
-  { name: '德宏州', total: 330.80, agriculture: 194.50, forestry: 34.20, animal: 85.80, fishery: 5.10, service: 11.20 },
-  { name: '怒江州', total: 132.50, agriculture: 69.20, forestry: 30.00, animal: 29.80, fishery: 0.85, service: 2.65 },
-  { name: '迪庆州', total: 100.50, agriculture: 47.50, forestry: 27.20, animal: 23.50, fishery: 0.50, service: 1.80 }
+  { name: '昆明市', total: 652.30, agriculture: 345.20, forestry: 72.50, animal: 198.60, fishery: 12.80 },
+  { name: '曲靖市', total: 785.50, agriculture: 425.30, forestry: 58.20, animal: 268.50, fishery: 15.30 },
+  { name: '玉溪市', total: 425.80, agriculture: 255.60, forestry: 35.80, animal: 112.30, fishery: 8.50 },
+  { name: '保山市', total: 520.30, agriculture: 295.80, forestry: 48.50, animal: 152.60, fishery: 10.20 },
+  { name: '昭通市', total: 615.20, agriculture: 345.50, forestry: 42.30, animal: 205.80, fishery: 5.60 },
+  { name: '丽江市', total: 285.60, agriculture: 155.30, forestry: 38.50, animal: 78.20, fishery: 3.80 },
+  { name: '普洱市', total: 485.30, agriculture: 265.80, forestry: 68.50, animal: 125.30, fishery: 8.20 },
+  { name: '临沧市', total: 495.80, agriculture: 275.30, forestry: 55.80, animal: 138.50, fishery: 6.50 },
+  { name: '楚雄州', total: 465.20, agriculture: 255.80, forestry: 45.30, animal: 142.50, fishery: 5.80 },
+  { name: '红河州', total: 695.50, agriculture: 385.30, forestry: 52.80, animal: 218.50, fishery: 18.60 },
+  { name: '文山州', total: 455.30, agriculture: 255.80, forestry: 38.50, animal: 142.30, fishery: 4.50 },
+  { name: '西双版纳州', total: 325.80, agriculture: 195.50, forestry: 42.30, animal: 72.50, fishery: 5.20 },
+  { name: '大理州', total: 555.30, agriculture: 305.80, forestry: 55.30, animal: 165.20, fishery: 10.50 },
+  { name: '德宏州', total: 315.50, agriculture: 185.30, forestry: 32.50, animal: 82.30, fishery: 4.80 },
+  { name: '怒江州', total: 125.30, agriculture: 65.80, forestry: 28.50, animal: 28.50, fishery: 0.80 },
+  { name: '迪庆州', total: 95.80, agriculture: 45.30, forestry: 25.80, animal: 22.50, fishery: 0.50 }
 ];
 
 // 粮食产量数据（1978-2024）

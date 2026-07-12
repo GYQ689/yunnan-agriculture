@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetId = this.getAttribute('href').substring(1);
             sections.forEach(s => s.classList.remove('active'));
             document.getElementById(targetId).classList.add('active');
-            // 多次 resize 确保图表正确渲染
             setTimeout(resizeAllCharts, 50);
             setTimeout(resizeAllCharts, 200);
             setTimeout(resizeAllCharts, 500);
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initMapCharts();
     initStoryCharts();
 
-    // 初始 resize
     setTimeout(resizeAllCharts, 100);
     setTimeout(resizeAllCharts, 500);
 });
@@ -80,7 +78,6 @@ function initOverviewChart() {
 // 2. 产值趋势
 // ============================================
 function initTrendCharts() {
-    // 1. 分项产值趋势
     const trendChart = registerChart(echarts.init(document.getElementById('trend-line')));
     const years = outputValueData.map(d => d.year);
     trendChart.setOption({
@@ -98,7 +95,6 @@ function initTrendCharts() {
         ]
     });
 
-    // 2. 产值指数趋势
     const indexChart = registerChart(echarts.init(document.getElementById('index-line')));
     const indexYears = outputIndexData.map(d => d.year);
     indexChart.setOption({
@@ -111,8 +107,7 @@ function initTrendCharts() {
         legend: { bottom: 0 },
         grid: { left: 60, right: 30, top: 50, bottom: 50 },
         xAxis: { type: 'category', data: indexYears, axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: { type: 'value', name: '指数', min: 90, max: 115,
-            axisLabel: { formatter: '{value}' } },
+        yAxis: { type: 'value', name: '指数', min: 90, max: 115 },
         series: [
             { name: '总产值指数', type: 'line', data: outputIndexData.map(d => d.total), smooth: true, markLine: { data: [{ yAxis: 100, label: { formatter: '基准线100' } }] }, itemStyle: { color: '#5470c6' } },
             { name: '农业指数', type: 'line', data: outputIndexData.map(d => d.agriculture), smooth: true, itemStyle: { color: '#91cc75' } },
@@ -122,7 +117,6 @@ function initTrendCharts() {
         ]
     });
 
-    // 粮食产量
     const grainChart = registerChart(echarts.init(document.getElementById('grain-line')));
     grainChart.setOption({
         title: { text: '粮食产量变化趋势（1978-2024）', left: 'center', textStyle: { fontSize: 15 } },
@@ -146,11 +140,9 @@ function initTrendCharts() {
 // ============================================
 let pieChartInstance = null;
 function initStructureCharts() {
-    // 3. 年度结构饼图
     pieChartInstance = registerChart(echarts.init(document.getElementById('structure-pie')));
     updatePie(2024);
 
-    // 年份滑块
     const slider = document.getElementById('year-slider');
     const display = document.getElementById('year-display');
     slider.addEventListener('input', function() {
@@ -159,25 +151,23 @@ function initStructureCharts() {
         updatePie(year);
     });
 
-    // 4. 产业构成变化柱状图
-    const barChart = registerChart(echarts.init(document.getElementById('structure-bar')));
+    const areaChart = registerChart(echarts.init(document.getElementById('structure-area')));
     const years = outputValueData.map(d => d.year);
-    barChart.setOption({
-        title: { text: '产业构成变化柱状图', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+    areaChart.setOption({
+        title: { text: '产业结构变化（堆叠面积图）', left: 'center', textStyle: { fontSize: 15 } },
+        tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
         legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
         grid: { left: 70, right: 30, top: 50, bottom: 50 },
         xAxis: { type: 'category', data: years, axisLabel: { formatter: '{value}年', rotate: 45, interval: 4 } },
         yAxis: { type: 'value', name: '亿元' },
         series: [
-            { name: '农业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.animal), itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.fishery), itemStyle: { color: '#ee6666' } }
+            { name: '农业', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: outputValueData.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
+            { name: '林业', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: outputValueData.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
+            { name: '牧业', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: outputValueData.map(d => d.animal), itemStyle: { color: '#fac858' } },
+            { name: '渔业', type: 'line', stack: 'Total', areaStyle: {}, emphasis: { focus: 'series' }, data: outputValueData.map(d => d.fishery), itemStyle: { color: '#ee6666' } }
         ]
     });
 
-    // 占比趋势
     const pctChart = registerChart(echarts.init(document.getElementById('structure-percent')));
     const pctYears = outputValueData.map(d => d.year);
     const agriPct = outputValueData.map(d => +((d.agriculture / d.total) * 100).toFixed(1));
@@ -269,17 +259,16 @@ function initProductCharts() {
 // 5. 州市对比
 // ============================================
 function initRegionCharts() {
-    // 5. 州市产值排名
     const barChart = registerChart(echarts.init(document.getElementById('region-bar')));
     const sorted = [...prefectureData].sort((a, b) => a.total - b.total);
     barChart.setOption({
-        title: { text: '各州市农林牧渔总产值排名（2024年）', left: 'center', textStyle: { fontSize: 15 } },
+        title: { text: '各州市农林牧渔总产值排名（2023年）', left: 'center', textStyle: { fontSize: 15 } },
         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: function(params) {
             let s = params[0].name + '<br/>';
             params.forEach(p => { s += p.marker + p.seriesName + ': ' + p.value + ' 亿元<br/>'; });
             return s;
         }},
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业','辅助服务'] },
+        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
         grid: { left: 100, right: 30, top: 50, bottom: 50 },
         xAxis: { type: 'value', name: '亿元' },
         yAxis: { type: 'category', data: sorted.map(d => d.name) },
@@ -287,12 +276,10 @@ function initRegionCharts() {
             { name: '农业', type: 'bar', stack: 'total', data: sorted.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
             { name: '林业', type: 'bar', stack: 'total', data: sorted.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
             { name: '牧业', type: 'bar', stack: 'total', data: sorted.map(d => d.animal), itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'bar', stack: 'total', data: sorted.map(d => d.fishery), itemStyle: { color: '#ee6666' } },
-            { name: '辅助服务', type: 'bar', stack: 'total', data: sorted.map(d => d.service), itemStyle: { color: '#73c0de' } }
+            { name: '渔业', type: 'bar', stack: 'total', data: sorted.map(d => d.fishery), itemStyle: { color: '#ee6666' } }
         ]
     });
 
-    // 6. 气泡图
     const bubbleChart = registerChart(echarts.init(document.getElementById('region-bubble')));
     bubbleChart.setOption({
         title: { text: '各州市产业构成气泡图', left: 'center', textStyle: { fontSize: 15 } },
@@ -314,13 +301,13 @@ function initRegionCharts() {
         }]
     });
 
-    // 7. 各州市产值构成（堆叠柱状图）
+    // 新增：各州市产值构成（堆叠柱状图）
     const compChart = registerChart(echarts.init(document.getElementById('region-composition')));
     const names = prefectureData.map(d => d.name);
     compChart.setOption({
-        title: { text: '各州市产值构成（2024年）', left: 'center', textStyle: { fontSize: 15 } },
+        title: { text: '各州市产值构成（2023年）', left: 'center', textStyle: { fontSize: 15 } },
         tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业','辅助服务'] },
+        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
         grid: { left: 100, right: 30, top: 50, bottom: 50 },
         xAxis: { type: 'category', data: names, axisLabel: { rotate: 45, fontSize: 11 } },
         yAxis: { type: 'value', name: '亿元' },
@@ -328,12 +315,10 @@ function initRegionCharts() {
             { name: '农业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
             { name: '林业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
             { name: '牧业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.animal), itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.fishery), itemStyle: { color: '#ee6666' } },
-            { name: '辅助服务', type: 'bar', stack: 'total', data: prefectureData.map(d => d.service), itemStyle: { color: '#73c0de' } }
+            { name: '渔业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.fishery), itemStyle: { color: '#ee6666' } }
         ]
     });
 
-    // 雷达图
     const radarChart = registerChart(echarts.init(document.getElementById('region-radar')));
     const topCities = ['昆明市','曲靖市','红河州','大理州','昭通市'];
     const radarColors = ['#5470c6','#91cc75','#fac858','#ee6666','#73c0de'];
@@ -346,8 +331,7 @@ function initRegionCharts() {
                 { name: '农业占比', max: 80 },
                 { name: '林业占比', max: 30 },
                 { name: '牧业占比', max: 50 },
-                { name: '渔业占比', max: 10 },
-                { name: '辅助服务占比', max: 10 }
+                { name: '渔业占比', max: 10 }
             ],
             center: ['50%', '50%'],
             radius: '60%'
@@ -362,8 +346,7 @@ function initRegionCharts() {
                         +((d.agriculture / d.total) * 100).toFixed(1),
                         +((d.forestry / d.total) * 100).toFixed(1),
                         +((d.animal / d.total) * 100).toFixed(1),
-                        +((d.fishery / d.total) * 100).toFixed(1),
-                        +((d.service / d.total) * 100).toFixed(1)
+                        +((d.fishery / d.total) * 100).toFixed(1)
                     ],
                     lineStyle: { color: radarColors[i] },
                     itemStyle: { color: radarColors[i] },
@@ -375,10 +358,9 @@ function initRegionCharts() {
 }
 
 // ============================================
-// 6. 云南省地图
+// 6. 云南省地图（新增）
 // ============================================
 function initMapCharts() {
-    // 使用 DataV GeoJSON 加载云南省地图
     fetch('https://geo.datav.aliyun.com/areas_v3/bound/530000_full.json')
         .then(r => r.json())
         .then(geoJson => {
@@ -387,30 +369,22 @@ function initMapCharts() {
             initScatterMap();
         })
         .catch(err => {
-            console.error('地图数据加载失败，使用备用方案', err);
+            console.error('地图数据加载失败', err);
             initFallbackMap();
         });
 }
 
 function initFilledMap() {
     const chart = registerChart(echarts.init(document.getElementById('yunnan-map')));
-    const mapData = prefectureData.map(d => ({
-        name: d.name,
-        value: d.total
-    }));
+    const mapData = prefectureData.map(d => ({ name: d.name, value: d.total }));
     chart.setOption({
-        title: { text: '云南省各州市农林牧渔总产值（2024年）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: {
-            trigger: 'item',
-            formatter: function(p) {
-                if (p.data && p.data.value !== undefined) {
-                    return p.name + '<br/>总产值: ' + p.data.value + ' 亿元';
-                }
-                return p.name;
-            }
-        },
+        title: { text: '云南省各州市农林牧渔总产值（2023年）', left: 'center', textStyle: { fontSize: 15 } },
+        tooltip: { trigger: 'item', formatter: function(p) {
+            if (p.data && p.data.value !== undefined) return p.name + '<br/>总产值: ' + p.data.value + ' 亿元';
+            return p.name;
+        }},
         visualMap: {
-            min: 100, max: 850, left: 'left', top: 'bottom',
+            min: 90, max: 800, left: 'left', top: 'bottom',
             text: ['高', '低'],
             inRange: { color: ['#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695'] },
             calculable: true
@@ -418,10 +392,7 @@ function initFilledMap() {
         series: [{
             type: 'map', map: 'yunnan', roam: true,
             label: { show: true, fontSize: 11, color: '#333' },
-            emphasis: {
-                label: { show: true, fontSize: 14, fontWeight: 'bold' },
-                itemStyle: { areaColor: '#fdda76' }
-            },
+            emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold' }, itemStyle: { areaColor: '#fdda76' } },
             data: mapData
         }]
     });
@@ -429,7 +400,6 @@ function initFilledMap() {
 
 function initScatterMap() {
     const chart = registerChart(echarts.init(document.getElementById('yunnan-scatter')));
-    // 各州市中心坐标（近似）
     const coords = {
         '昆明市': [102.83, 25.02], '曲靖市': [103.80, 25.50],
         '玉溪市': [102.54, 24.35], '保山市': [99.17, 25.12],
@@ -446,9 +416,7 @@ function initScatterMap() {
     }));
     chart.setOption({
         title: { text: '各州市农业产值地理分布', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'item', formatter: function(p) {
-            return p.name + '<br/>总产值: ' + p.value[2] + ' 亿元';
-        }},
+        tooltip: { trigger: 'item', formatter: function(p) { return p.name + '<br/>总产值: ' + p.value[2] + ' 亿元'; }},
         geo: {
             map: 'yunnan', roam: true,
             itemStyle: { areaColor: '#f0f0f0', borderColor: '#999' },
@@ -468,7 +436,6 @@ function initScatterMap() {
 }
 
 function initFallbackMap() {
-    // 备用方案：如果 GeoJSON 加载失败，用表格展示
     const mapDiv = document.getElementById('yunnan-map');
     if (mapDiv) {
         mapDiv.style.display = 'flex';
@@ -495,15 +462,14 @@ function initFallbackMap() {
 // ============================================
 let storyChartInstance = null;
 function initStoryCharts() {
-    // 故事导航
     const nodesContainer = document.getElementById('story-nodes');
     const contentContainer = document.getElementById('story-content');
     storyChartInstance = registerChart(echarts.init(document.getElementById('story-chart')));
 
     storyNodes.forEach((node, i) => {
         const div = document.createElement('div');
-        div.className = 'timeline-node' + (i === 0 ? ' active' : '');
-        div.innerHTML = '<div class="node-dot"></div><div class="node-label">' + node.period + '</div>';
+        div.className = 'story-node' + (i === 0 ? ' active' : '');
+        div.innerHTML = '<div class="story-node-dot"></div><div class="story-node-label">' + node.period + '</div>';
         div.addEventListener('click', () => showStory(i));
         nodesContainer.appendChild(div);
     });
@@ -515,11 +481,10 @@ function showStory(index) {
     const content = document.getElementById('story-content');
     content.innerHTML = '<h3>' + node.title + '</h3><p class="period">' + node.period + '</p><p>' + node.content + '</p><div class="highlight">' + node.highlight + '</div>';
 
-    document.querySelectorAll('.timeline-node').forEach((n, i) => {
+    document.querySelectorAll('.story-node').forEach((n, i) => {
         n.classList.toggle('active', i === index);
     });
 
-    // 根据故事节点显示对应图表
     const startYear = parseInt(node.period.split('-')[0]);
     const endYear = parseInt(node.period.split('-')[1]);
     const filtered = outputValueData.filter(d => d.year >= startYear && d.year <= endYear);

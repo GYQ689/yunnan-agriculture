@@ -5,424 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>云南农业1978-2024演进之路 - 数据可视化</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-    <style>
-/* 全局样式 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary: #2d6a4f;
-    --primary-light: #40916c;
-    --primary-dark: #1b4332;
-    --accent: #d4a373;
-    --bg: #f8f9fa;
-    --bg-dark: #1a1a2e;
-    --text: #333;
-    --text-light: #666;
-    --card-bg: #ffffff;
-    --shadow: 0 4px 6px rgba(0,0,0,0.1);
-    --radius: 12px;
-}
-
-body {
-    font-family: 'Microsoft YaHei', 'PingFang SC', -apple-system, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    overflow-x: hidden;
-}
-
-/* 导航栏 */
-.navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 30px;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-
-.nav-brand {
-    color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2px;
-}
-
-.nav-link {
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    transition: all 0.3s;
-    white-space: nowrap;
-}
-
-.nav-link:hover, .nav-link.active {
-    color: white;
-    background: rgba(255,255,255,0.2);
-}
-
-/* 页面区域 */
-.section {
-    display: none;
-    padding: 80px 30px 30px;
-    min-height: 100vh;
-    animation: fadeIn 0.5s ease;
-}
-
-.section.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* 首页英雄区 */
-.hero {
-    text-align: center;
-    padding: 60px 20px;
-    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
-    border-radius: var(--radius);
-    color: white;
-    margin-bottom: 30px;
-}
-
-.hero h1 {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    margin-bottom: 40px;
-}
-
-.hero-stats {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
-}
-
-.stat-card {
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius);
-    padding: 20px 30px;
-    min-width: 160px;
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.stat-number {
-    font-size: 2.2rem;
-    font-weight: bold;
-    color: var(--accent);
-}
-
-.stat-unit {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.stat-label {
-    font-size: 0.85rem;
-    opacity: 0.7;
-    margin-top: 5px;
-}
-
-/* 标题 */
-.section-title {
-    text-align: center;
-    font-size: 1.8rem;
-    color: var(--primary-dark);
-    margin-bottom: 30px;
-    position: relative;
-    padding-bottom: 15px;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(to right, var(--primary), var(--accent));
-    border-radius: 2px;
-}
-
-/* 图表容器 */
-.chart-container {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-    width: 100%;
-}
-
-.chart-container h3 {
-    color: var(--primary-dark);
-    font-size: 1rem;
-    margin-bottom: 15px;
-    padding-left: 10px;
-    border-left: 3px solid var(--primary);
-}
-
-.chart-container.half {
-    flex: 1 1 0;
-    min-width: 0;
-}
-
-.chart-row {
-    display: flex;
-    gap: 20px;
-    flex-wrap: nowrap;
-}
-
-.chart-row.wrap {
-    flex-wrap: wrap;
-}
-
-.chart {
-    width: 100%;
-    height: 450px;
-    min-height: 400px;
-}
-
-/* 控件 */
-.controls {
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 15px;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-}
-
-.controls label {
-    font-weight: bold;
-    color: var(--primary-dark);
-    margin-right: 10px;
-}
-
-.controls input[type="range"] {
-    width: 300px;
-    margin: 0 15px;
-    accent-color: var(--primary);
-}
-
-#year-display {
-    font-weight: bold;
-    color: var(--accent);
-    font-size: 1.1rem;
-}
-
-/* 数据故事 */
-.story-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.story-nav {
-    margin-bottom: 30px;
-}
-
-.story-timeline {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-}
-
-.timeline-line {
-    position: absolute;
-    top: 50%;
-    left: 40px;
-    right: 40px;
-    height: 3px;
-    background: #ddd;
-    transform: translateY(-50%);
-}
-
-.timeline-nodes {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    position: relative;
-    z-index: 1;
-}
-
-.timeline-node {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.node-dot {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #ddd;
-    border: 3px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: all 0.3s;
-}
-
-.timeline-node.active .node-dot {
-    background: var(--primary);
-    transform: scale(1.3);
-}
-
-.node-label {
-    margin-top: 10px;
-    font-size: 0.8rem;
-    color: var(--text-light);
-    text-align: center;
-    max-width: 100px;
-}
-
-.timeline-node.active .node-label {
-    color: var(--primary-dark);
-    font-weight: bold;
-}
-
-.story-content {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: 30px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-    border-left: 4px solid var(--primary);
-}
-
-.story-content h3 {
-    color: var(--primary-dark);
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-}
-
-.story-content .period {
-    color: var(--accent);
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-.story-content p {
-    color: var(--text);
-    line-height: 1.8;
-    margin-bottom: 15px;
-}
-
-.story-content .highlight {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    display: inline-block;
-}
-
-.story-chart-container {
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-}
-
-/* 页脚 */
-.footer {
-    text-align: center;
-    padding: 30px;
-    background: var(--primary-dark);
-    color: rgba(255,255,255,0.7);
-    font-size: 0.85rem;
-}
-
-.footer p {
-    margin: 5px 0;
-}
-
-/* 响应式 */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
-    
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .nav-link {
-        font-size: 0.8rem;
-        padding: 5px 10px;
-    }
-    
-    .section {
-        padding: 120px 15px 15px;
-    }
-    
-    .hero h1 {
-        font-size: 1.5rem;
-    }
-    
-    .hero-stats {
-        gap: 15px;
-    }
-    
-    .stat-card {
-        min-width: 120px;
-        padding: 15px;
-    }
-    
-    .chart-row {
-        flex-wrap: wrap;
-    }
-    
-    .chart-container.half {
-        flex: 1 1 100%;
-    }
-    
-    .chart {
-        height: 350px;
-        min-height: 300px;
-    }
-    
-    .controls input[type="range"] {
-        width: 200px;
-    }
-}
-
-</style>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/map/js/china.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="nav-brand">云南农业演进之路</div>
         <div class="nav-links">
@@ -436,35 +23,53 @@ body {
         </div>
     </nav>
 
-    <!-- 1. 概览 -->
+    <!-- 首页概览 -->
     <section id="overview" class="section active">
         <div class="hero">
             <h1>云南农业1978-2024演进之路</h1>
             <p class="subtitle">从红土地到绿色经济 — 46年农业现代化历程的数据叙事</p>
             <div class="hero-stats">
-                <div class="stat-card"><div class="stat-number">6847</div><div class="stat-unit">亿元</div><div class="stat-label">2024年农林牧渔总产值</div></div>
-                <div class="stat-card"><div class="stat-number">171</div><div class="stat-unit">倍</div><div class="stat-label">46年产值增长</div></div>
-                <div class="stat-card"><div class="stat-number">1993</div><div class="stat-unit">万吨</div><div class="stat-label">2024年粮食总产量</div></div>
-                <div class="stat-card"><div class="stat-number">16</div><div class="stat-unit">个州市</div><div class="stat-label">覆盖全省</div></div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total">6847</div>
+                    <div class="stat-unit">亿元</div>
+                    <div class="stat-label">2024年农林牧渔总产值</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">171</div>
+                    <div class="stat-unit">倍</div>
+                    <div class="stat-label">46年产值增长</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1993</div>
+                    <div class="stat-unit">万吨</div>
+                    <div class="stat-label">2024年粮食总产量</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">16</div>
+                    <div class="stat-unit">个州市</div>
+                    <div class="stat-label">覆盖全省</div>
+                </div>
             </div>
         </div>
-        <div class="chart-container">
-            <div id="overview-line" class="chart"></div>
+        <div class="overview-charts">
+            <div class="chart-container">
+                <div id="overview-line" class="chart"></div>
+            </div>
         </div>
     </section>
 
-    <!-- 2. 产值趋势（对应：1.分项产值趋势 + 2.产值指数趋势） -->
+    <!-- 产值趋势 -->
     <section id="trend" class="section">
         <h2 class="section-title">农林牧渔业总产值趋势</h2>
         <div class="chart-row">
             <div class="chart-container">
-                <h3>1. 各产业产值变化趋势（1978-2024）</h3>
+                <h3>各产业产值变化趋势（1978-2024）</h3>
                 <div id="trend-line" class="chart"></div>
             </div>
         </div>
         <div class="chart-row">
             <div class="chart-container">
-                <h3>2. 产值指数趋势（上年=100）</h3>
+                <h3>产值指数趋势（上年=100）</h3>
                 <div id="index-line" class="chart"></div>
             </div>
         </div>
@@ -476,7 +81,7 @@ body {
         </div>
     </section>
 
-    <!-- 3. 产业结构（对应：3.年度结构饼图 + 4.产业构成变化柱状图） -->
+    <!-- 产业结构 -->
     <section id="structure" class="section">
         <h2 class="section-title">产业结构分析</h2>
         <div class="controls">
@@ -486,12 +91,12 @@ body {
         </div>
         <div class="chart-row">
             <div class="chart-container half">
-                <h3>3. 年度结构饼图</h3>
+                <h3>产业产值结构（饼图）</h3>
                 <div id="structure-pie" class="chart"></div>
             </div>
             <div class="chart-container half">
-                <h3>4. 产业构成变化柱状图</h3>
-                <div id="structure-bar" class="chart"></div>
+                <h3>产业结构变化（堆叠面积图）</h3>
+                <div id="structure-area" class="chart"></div>
             </div>
         </div>
         <div class="chart-row">
@@ -502,7 +107,7 @@ body {
         </div>
     </section>
 
-    <!-- 4. 农产品产量 -->
+    <!-- 农产品产量 -->
     <section id="products" class="section">
         <h2 class="section-title">主要农产品产量</h2>
         <div class="chart-row">
@@ -519,24 +124,24 @@ body {
         </div>
     </section>
 
-    <!-- 5. 州市对比（对应：5.州市产值排名 + 6.州市产业构成气泡图 + 7.各州市产值构成） -->
+    <!-- 州市对比 -->
     <section id="region" class="section">
         <h2 class="section-title">各州市农业对比</h2>
         <div class="chart-row">
             <div class="chart-container">
-                <h3>5. 各州市农林牧渔总产值排名（2024年）</h3>
+                <h3>各州市农林牧渔总产值排名（2023年）</h3>
                 <div id="region-bar" class="chart"></div>
             </div>
         </div>
         <div class="chart-row">
             <div class="chart-container">
-                <h3>6. 各州市产业构成气泡图</h3>
+                <h3>各州市产业构成气泡图</h3>
                 <div id="region-bubble" class="chart"></div>
             </div>
         </div>
         <div class="chart-row">
             <div class="chart-container">
-                <h3>7. 各州市产值构成（堆叠柱状图）</h3>
+                <h3>各州市产值构成（堆叠柱状图）</h3>
                 <div id="region-composition" class="chart"></div>
             </div>
         </div>
@@ -548,12 +153,12 @@ body {
         </div>
     </section>
 
-    <!-- 6. 云南省填充地图（对应：8.云南省填充地图） -->
+    <!-- 云南省填充地图 -->
     <section id="map" class="section">
         <h2 class="section-title">云南省农业地图</h2>
         <div class="chart-row">
             <div class="chart-container">
-                <h3>8. 云南省各州市农林牧渔总产值填充地图（2024年）</h3>
+                <h3>云南省各州市农林牧渔总产值填充地图（2024年）</h3>
                 <div id="yunnan-map" class="chart" style="height:600px;"></div>
             </div>
         </div>
@@ -565,9 +170,9 @@ body {
         </div>
     </section>
 
-    <!-- 7. 数据故事（对应：故事仪表盘） -->
+    <!-- 数据故事 -->
     <section id="story" class="section">
-        <h2 class="section-title">数据故事：从"大农业"到"强农业"</h2>
+        <h2 class="section-title">数据故事：云南农业的五个阶段</h2>
         <div class="story-container">
             <div class="story-nav">
                 <div class="story-timeline">
@@ -575,791 +180,22 @@ body {
                     <div class="timeline-nodes" id="story-nodes"></div>
                 </div>
             </div>
-            <div class="story-content" id="story-content"></div>
+            <div class="story-content" id="story-content">
+                <!-- Dynamic content -->
+            </div>
             <div class="story-chart-container">
                 <div id="story-chart" class="chart"></div>
             </div>
         </div>
     </section>
 
+    <!-- 页脚 -->
     <footer class="footer">
         <p>数据来源：云南省统计年鉴、国家统计局、云南省国民经济和社会发展统计公报</p>
         <p>云南农业1978-2024演进之路 · 数据可视化系统</p>
     </footer>
 
-    <script>
-// 云南农业1978-2024年数据
-// 数据来源：云南省统计年鉴、国家统计局
-
-// 农、林、牧、渔业总产值（1978-2024年）单位：亿元
-const outputValueData = [
-  { year: 1978, total: 40.02, agriculture: 30.35, forestry: 2.48, animal: 7.11, fishery: 0.08 },
-  { year: 1979, total: 44.71, agriculture: 33.15, forestry: 3.17, animal: 8.30, fishery: 0.09 },
-  { year: 1980, total: 48.20, agriculture: 34.82, forestry: 2.94, animal: 10.25, fishery: 0.19 },
-  { year: 1981, total: 55.20, agriculture: 40.48, forestry: 3.77, animal: 10.75, fishery: 0.20 },
-  { year: 1982, total: 61.84, agriculture: 44.96, forestry: 3.86, animal: 12.81, fishery: 0.21 },
-  { year: 1983, total: 65.68, agriculture: 46.85, forestry: 4.73, animal: 13.86, fishery: 0.24 },
-  { year: 1984, total: 77.36, agriculture: 55.31, forestry: 5.97, animal: 15.81, fishery: 0.27 },
-  { year: 1985, total: 88.88, agriculture: 60.23, forestry: 7.90, animal: 20.35, fishery: 0.40 },
-  { year: 1986, total: 96.01, agriculture: 61.73, forestry: 7.40, animal: 26.16, fishery: 0.72 },
-  { year: 1987, total: 111.25, agriculture: 72.02, forestry: 8.85, animal: 29.44, fishery: 0.94 },
-  { year: 1988, total: 135.39, agriculture: 86.75, forestry: 10.05, animal: 37.03, fishery: 1.56 },
-  { year: 1989, total: 152.68, agriculture: 96.08, forestry: 12.97, animal: 41.70, fishery: 1.93 },
-  { year: 1990, total: 211.72, agriculture: 138.03, forestry: 18.27, animal: 54.03, fishery: 1.39 },
-  { year: 1991, total: 222.93, agriculture: 147.17, forestry: 18.69, animal: 55.70, fishery: 1.37 },
-  { year: 1992, total: 250.35, agriculture: 163.93, forestry: 22.84, animal: 61.56, fishery: 2.02 },
-  { year: 1993, total: 281.21, agriculture: 179.39, forestry: 25.39, animal: 72.89, fishery: 3.54 },
-  { year: 1994, total: 356.78, agriculture: 228.99, forestry: 30.40, animal: 92.13, fishery: 5.25 },
-  { year: 1995, total: 474.46, agriculture: 299.48, forestry: 40.53, animal: 127.19, fishery: 7.26 },
-  { year: 1996, total: 567.51, agriculture: 369.36, forestry: 43.21, animal: 146.03, fishery: 8.91 },
-  { year: 1997, total: 612.01, agriculture: 397.09, forestry: 40.40, animal: 163.93, fishery: 10.59 },
-  { year: 1998, total: 620.02, agriculture: 381.26, forestry: 41.77, animal: 184.83, fishery: 12.16 },
-  { year: 1999, total: 642.47, agriculture: 395.00, forestry: 45.60, animal: 188.80, fishery: 13.10 },
-  { year: 2000, total: 680.86, agriculture: 416.36, forestry: 49.75, animal: 201.49, fishery: 13.26 },
-  { year: 2001, total: 703.53, agriculture: 431.31, forestry: 47.21, animal: 210.63, fishery: 14.38 },
-  { year: 2002, total: 737.55, agriculture: 445.35, forestry: 53.52, animal: 223.49, fishery: 15.19 },
-  { year: 2003, total: 799.33, agriculture: 433.91, forestry: 73.17, animal: 242.53, fishery: 16.56 },
-  { year: 2004, total: 965.22, agriculture: 516.92, forestry: 86.40, animal: 305.42, fishery: 19.14 },
-  { year: 2005, total: 1068.58, agriculture: 559.32, forestry: 105.53, animal: 339.68, fishery: 22.97 },
-  { year: 2006, total: 1142.10, agriculture: 610.30, forestry: 142.60, animal: 346.00, fishery: 18.60 },
-  { year: 2007, total: 1417.52, agriculture: 705.13, forestry: 156.27, animal: 465.13, fishery: 34.98 },
-  { year: 2008, total: 1649.10, agriculture: 786.35, forestry: 183.60, animal: 583.74, fishery: 36.56 },
-  { year: 2009, total: 1716.62, agriculture: 843.38, forestry: 196.13, animal: 578.02, fishery: 39.40 },
-  { year: 2010, total: 1824.82, agriculture: 915.05, forestry: 184.23, animal: 617.50, fishery: 44.19 },
-  { year: 2011, total: 2334.48, agriculture: 1108.74, forestry: 245.67, animal: 857.73, fishery: 50.36 },
-  { year: 2012, total: 2716.50, agriculture: 1374.39, forestry: 225.83, animal: 980.51, fishery: 55.64 },
-  { year: 2013, total: 3097.50, agriculture: 1606.89, forestry: 293.25, animal: 1046.14, fishery: 60.79 },
-  { year: 2014, total: 3307.82, agriculture: 1765.43, forestry: 303.12, animal: 1073.20, fishery: 66.06 },
-  { year: 2015, total: 3438.73, agriculture: 1794.65, forestry: 317.12, animal: 1147.53, fishery: 67.62 },
-  { year: 2016, total: 3704.69, agriculture: 1888.83, forestry: 330.37, animal: 1286.06, fishery: 76.39 },
-  { year: 2017, total: 3872.93, agriculture: 1982.52, forestry: 381.53, animal: 1289.45, fishery: 87.70 },
-  { year: 2018, total: 4108.88, agriculture: 2234.74, forestry: 396.88, animal: 1237.12, fishery: 98.25 },
-  { year: 2019, total: 4935.73, agriculture: 2680.16, forestry: 395.54, animal: 1600.73, fishery: 105.38 },
-  { year: 2020, total: 5920.52, agriculture: 2902.24, forestry: 429.50, animal: 2315.41, fishery: 103.98 },
-  { year: 2021, total: 6351.82, agriculture: 3441.47, forestry: 497.33, animal: 2113.31, fishery: 112.38 },
-  { year: 2022, total: 6635.80, agriculture: 3629.90, forestry: 492.20, animal: 2192.30, fishery: 119.90 },
-  { year: 2023, total: 6834.50, agriculture: 4041.84, forestry: 485.17, animal: 1969.32, fishery: 125.37 },
-  { year: 2024, total: 6846.86, agriculture: 4023.68, forestry: 595.58, animal: 1869.18, fishery: 134.12 }
-];
-
-// 产值指数（上年=100）
-const outputIndexData = [
-  { year: 1978, total: 104.0, agriculture: 105.0, forestry: 103.0, animal: 102.0, fishery: 105.0 },
-  { year: 1979, total: 105.5, agriculture: 106.0, forestry: 104.0, animal: 104.0, fishery: 106.0 },
-  { year: 1980, total: 103.6, agriculture: 103.0, forestry: 102.0, animal: 104.0, fishery: 103.0 },
-  { year: 1981, total: 106.1, agriculture: 107.0, forestry: 105.0, animal: 104.0, fishery: 106.0 },
-  { year: 1982, total: 104.4, agriculture: 105.0, forestry: 103.0, animal: 103.0, fishery: 104.0 },
-  { year: 1983, total: 105.6, agriculture: 106.0, forestry: 104.0, animal: 105.0, fishery: 105.0 },
-  { year: 1984, total: 107.4, agriculture: 108.0, forestry: 106.0, animal: 106.0, fishery: 107.0 },
-  { year: 1985, total: 106.5, agriculture: 107.0, forestry: 105.0, animal: 106.0, fishery: 107.0 },
-  { year: 1986, total: 103.0, agriculture: 102.0, forestry: 101.0, animal: 104.0, fishery: 105.0 },
-  { year: 1987, total: 106.1, agriculture: 107.0, forestry: 105.0, animal: 105.0, fishery: 106.0 },
-  { year: 1988, total: 106.6, agriculture: 107.0, forestry: 104.0, animal: 106.0, fishery: 108.0 },
-  { year: 1989, total: 102.9, agriculture: 103.0, forestry: 102.0, animal: 102.0, fishery: 103.0 },
-  { year: 1990, total: 106.5, agriculture: 107.0, forestry: 105.0, animal: 106.0, fishery: 104.0 },
-  { year: 1991, total: 105.6, agriculture: 106.0, forestry: 104.0, animal: 105.0, fishery: 105.0 },
-  { year: 1992, total: 104.4, agriculture: 105.0, forestry: 103.0, animal: 104.0, fishery: 104.0 },
-  { year: 1993, total: 103.0, agriculture: 103.0, forestry: 102.0, animal: 103.0, fishery: 105.0 },
-  { year: 1994, total: 103.1, agriculture: 103.0, forestry: 101.0, animal: 104.0, fishery: 101.0 },
-  { year: 1995, total: 106.5, agriculture: 107.0, forestry: 105.0, animal: 106.0, fishery: 107.0 },
-  { year: 1996, total: 107.4, agriculture: 108.0, forestry: 106.0, animal: 107.0, fishery: 107.0 },
-  { year: 1997, total: 108.2, agriculture: 109.0, forestry: 107.0, animal: 108.0, fishery: 108.0 },
-  { year: 1998, total: 104.5, agriculture: 104.0, forestry: 103.0, animal: 105.0, fishery: 104.0 },
-  { year: 1999, total: 105.5, agriculture: 106.0, forestry: 104.0, animal: 105.0, fishery: 104.0 },
-  { year: 2000, total: 106.5, agriculture: 107.0, forestry: 105.0, animal: 106.0, fishery: 106.0 },
-  { year: 2001, total: 103.6, agriculture: 104.0, forestry: 102.0, animal: 103.0, fishery: 103.0 },
-  { year: 2002, total: 104.6, agriculture: 105.0, forestry: 103.0, animal: 104.0, fishery: 103.0 },
-  { year: 2003, total: 106.6, agriculture: 107.0, forestry: 105.0, animal: 106.0, fishery: 104.0 },
-  { year: 2004, total: 106.8, agriculture: 107.0, forestry: 106.0, animal: 106.0, fishery: 106.0 },
-  { year: 2005, total: 106.9, agriculture: 107.0, forestry: 105.0, animal: 107.0, fishery: 104.0 },
-  { year: 2006, total: 108.4, agriculture: 109.0, forestry: 107.0, animal: 107.0, fishery: 107.0 },
-  { year: 2007, total: 105.6, agriculture: 106.0, forestry: 104.0, animal: 105.0, fishery: 106.0 },
-  { year: 2008, total: 107.9, agriculture: 108.0, forestry: 107.0, animal: 107.0, fishery: 107.0 },
-  { year: 2009, total: 105.8, agriculture: 106.0, forestry: 104.0, animal: 105.0, fishery: 104.0 },
-  { year: 2010, total: 104.7, agriculture: 105.0, forestry: 103.0, animal: 104.0, fishery: 103.0 },
-  { year: 2011, total: 106.1, agriculture: 107.0, forestry: 105.0, animal: 106.0, fishery: 106.0 },
-  { year: 2012, total: 107.0, agriculture: 107.0, forestry: 105.0, animal: 107.0, fishery: 105.0 },
-  { year: 2013, total: 107.0, agriculture: 107.0, forestry: 106.0, animal: 107.0, fishery: 106.0 },
-  { year: 2014, total: 106.2, agriculture: 106.0, forestry: 105.0, animal: 106.0, fishery: 106.0 },
-  { year: 2015, total: 106.0, agriculture: 106.0, forestry: 105.0, animal: 106.0, fishery: 106.0 },
-  { year: 2016, total: 105.8, agriculture: 106.0, forestry: 104.0, animal: 106.0, fishery: 106.0 },
-  { year: 2017, total: 106.0, agriculture: 106.0, forestry: 105.0, animal: 106.0, fishery: 106.0 },
-  { year: 2018, total: 106.3, agriculture: 106.0, forestry: 106.0, animal: 106.0, fishery: 106.0 },
-  { year: 2019, total: 105.6, agriculture: 106.0, forestry: 105.0, animal: 105.0, fishery: 106.0 },
-  { year: 2020, total: 105.8, agriculture: 106.0, forestry: 105.0, animal: 105.0, fishery: 106.0 },
-  { year: 2021, total: 110.4, agriculture: 107.8, forestry: 105.5, animal: 115.0, fishery: 102.7 },
-  { year: 2022, total: 104.5, agriculture: 104.5, forestry: 101.0, animal: 103.7, fishery: 106.7 },
-  { year: 2023, total: 104.3, agriculture: 104.5, forestry: 107.0, animal: 103.4, fishery: 103.9 },
-  { year: 2024, total: 102.6, agriculture: 105.1, forestry: 107.0, animal: 95.8, fishery: 105.6 }
-];
-
-// 主要农产品产量（1978-2024年）单位：万吨
-const mainProductsData = [
-  { year: 1978, grain: 864.50, oil: 13.10, sugar: 28.70, tea: 1.50, tobacco: 10.50 },
-  { year: 1980, grain: 911.50, oil: 15.30, sugar: 45.80, tea: 2.20, tobacco: 12.30 },
-  { year: 1985, grain: 960.00, oil: 23.50, sugar: 85.30, tea: 3.80, tobacco: 23.50 },
-  { year: 1990, grain: 1060.50, oil: 28.70, sugar: 115.60, tea: 5.40, tobacco: 41.20 },
-  { year: 1995, grain: 1158.00, oil: 33.20, sugar: 145.30, tea: 7.20, tobacco: 52.80 },
-  { year: 2000, grain: 1260.50, oil: 38.50, sugar: 145.80, tea: 9.10, tobacco: 55.30 },
-  { year: 2005, grain: 1405.50, oil: 45.30, sugar: 145.20, tea: 13.80, tobacco: 51.50 },
-  { year: 2010, grain: 1531.50, oil: 48.70, sugar: 175.30, tea: 20.50, tobacco: 50.20 },
-  { year: 2015, grain: 1805.50, oil: 55.30, sugar: 205.80, tea: 33.50, tobacco: 48.50 },
-  { year: 2016, grain: 1858.50, oil: 57.80, sugar: 185.30, tea: 36.20, tobacco: 45.30 },
-  { year: 2017, grain: 1862.50, oil: 60.30, sugar: 195.80, tea: 38.70, tobacco: 42.80 },
-  { year: 2018, grain: 1883.50, oil: 62.50, sugar: 215.30, tea: 40.10, tobacco: 40.50 },
-  { year: 2019, grain: 1870.00, oil: 64.80, sugar: 225.50, tea: 42.50, tobacco: 38.20 },
-  { year: 2020, grain: 1896.00, oil: 62.30, sugar: 215.80, tea: 43.50, tobacco: 36.50 },
-  { year: 2021, grain: 1930.30, oil: 63.89, sugar: 220.50, tea: 50.21, tobacco: 35.80 },
-  { year: 2022, grain: 1955.00, oil: 66.50, sugar: 235.80, tea: 53.20, tobacco: 34.50 },
-  { year: 2023, grain: 1974.00, oil: 68.50, sugar: 245.30, tea: 55.68, tobacco: 33.20 },
-  { year: 2024, grain: 1993.46, oil: 71.22, sugar: 255.80, tea: 58.62, tobacco: 32.50 }
-];
-
-// 各州市农业总产值（2024年）单位：亿元
-const prefectureData = [
-  { name: '昆明市', total: 680.50, agriculture: 360.20, forestry: 75.80, animal: 205.30, fishery: 13.50, service: 25.70 },
-  { name: '曲靖市', total: 820.30, agriculture: 445.80, forestry: 60.50, animal: 278.20, fishery: 16.20, service: 19.60 },
-  { name: '玉溪市', total: 445.60, agriculture: 268.30, forestry: 37.20, animal: 116.80, fishery: 9.10, service: 14.20 },
-  { name: '保山市', total: 545.80, agriculture: 310.50, forestry: 50.80, animal: 158.30, fishery: 10.80, service: 15.40 },
-  { name: '昭通市', total: 645.30, agriculture: 362.80, forestry: 44.20, animal: 214.50, fishery: 5.90, service: 17.90 },
-  { name: '丽江市', total: 298.50, agriculture: 162.30, forestry: 40.20, animal: 81.50, fishery: 4.00, service: 10.50 },
-  { name: '普洱市', total: 510.20, agriculture: 280.50, forestry: 72.30, animal: 130.80, fishery: 8.60, service: 18.00 },
-  { name: '临沧市', total: 520.50, agriculture: 290.30, forestry: 58.50, animal: 144.20, fishery: 6.80, service: 20.70 },
-  { name: '楚雄州', total: 488.30, agriculture: 268.50, forestry: 47.20, animal: 148.30, fishery: 6.10, service: 18.20 },
-  { name: '红河州', total: 730.20, agriculture: 405.30, forestry: 55.20, animal: 228.50, fishery: 19.50, service: 21.70 },
-  { name: '文山州', total: 478.50, agriculture: 268.30, forestry: 40.20, animal: 148.50, fishery: 4.70, service: 16.80 },
-  { name: '西双版纳州', total: 342.30, agriculture: 205.80, forestry: 44.50, animal: 75.80, fishery: 5.50, service: 10.70 },
-  { name: '大理州', total: 582.50, agriculture: 320.50, forestry: 58.00, animal: 172.30, fishery: 11.00, service: 20.70 },
-  { name: '德宏州', total: 330.80, agriculture: 194.50, forestry: 34.20, animal: 85.80, fishery: 5.10, service: 11.20 },
-  { name: '怒江州', total: 132.50, agriculture: 69.20, forestry: 30.00, animal: 29.80, fishery: 0.85, service: 2.65 },
-  { name: '迪庆州', total: 100.50, agriculture: 47.50, forestry: 27.20, animal: 23.50, fishery: 0.50, service: 1.80 }
-];
-
-// 粮食产量数据（1978-2024）
-const grainData = [
-  { year: 1978, output: 864.50, area: 285.3 },
-  { year: 1980, output: 911.50, area: 288.5 },
-  { year: 1985, output: 960.00, area: 292.3 },
-  { year: 1990, output: 1060.50, area: 298.5 },
-  { year: 1995, output: 1158.00, area: 302.8 },
-  { year: 2000, output: 1260.50, area: 305.2 },
-  { year: 2005, output: 1405.50, area: 310.5 },
-  { year: 2010, output: 1531.50, area: 315.8 },
-  { year: 2011, output: 1605.50, area: 318.2 },
-  { year: 2012, output: 1705.30, area: 322.5 },
-  { year: 2013, output: 1750.50, area: 325.8 },
-  { year: 2014, output: 1780.30, area: 328.2 },
-  { year: 2015, output: 1805.50, area: 330.5 },
-  { year: 2016, output: 1858.50, area: 335.2 },
-  { year: 2017, output: 1862.50, area: 338.5 },
-  { year: 2018, output: 1883.50, area: 340.2 },
-  { year: 2019, output: 1870.00, area: 342.5 },
-  { year: 2020, output: 1896.00, area: 418.5 },
-  { year: 2021, output: 1930.30, area: 420.2 },
-  { year: 2022, output: 1955.00, area: 422.8 },
-  { year: 2023, output: 1974.00, area: 424.3 },
-  { year: 2024, output: 1993.46, area: 424.7 }
-];
-
-// 特色农产品数据
-const specialtyData = [
-  { year: 2015, vegetables: 2150.5, fruits: 580.3, tea: 33.5, flowers: 100.5, nuts: 120.3 },
-  { year: 2016, vegetables: 2280.3, fruits: 650.5, tea: 36.2, flowers: 110.8, nuts: 135.5 },
-  { year: 2017, vegetables: 2420.5, fruits: 720.8, tea: 38.7, flowers: 125.3, nuts: 155.2 },
-  { year: 2018, vegetables: 2550.8, fruits: 790.3, tea: 40.1, flowers: 140.5, nuts: 175.8 },
-  { year: 2019, vegetables: 2680.3, fruits: 850.5, tea: 42.5, flowers: 152.3, nuts: 195.3 },
-  { year: 2020, vegetables: 2750.5, fruits: 900.8, tea: 43.5, flowers: 145.8, nuts: 210.5 },
-  { year: 2021, vegetables: 2748.86, fruits: 1041.82, tea: 50.21, flowers: 158.33, nuts: 225.8 },
-  { year: 2022, vegetables: 2850.3, fruits: 1180.5, tea: 53.2, flowers: 175.5, nuts: 240.3 },
-  { year: 2023, vegetables: 2960.83, fruits: 1380.88, tea: 55.68, flowers: 189.73, nuts: 255.91 },
-  { year: 2024, vegetables: 3050.50, fruits: 1480.30, tea: 58.62, flowers: 208.50, nuts: 270.50 }
-];
-
-// 数据故事节点
-const storyNodes = [
-  {
-    id: 'intro',
-    title: '云南农业：从红土地到绿色经济',
-    period: '1978-2024',
-    content: '云南省地处中国西南边陲，地形以高原山地为主，独特的低纬度高原气候赋予了云南"动植物王国"的美誉。1978年改革开放以来，云南农业经历了从传统自给农业向现代高原特色农业的历史性转变。',
-    highlight: '46年间，云南农林牧渔业总产值从40亿元增长到6847亿元，增长了171倍'
-  },
-  {
-    id: 'reform',
-    title: '改革起步：1978-1990',
-    period: '1978-1990',
-    content: '家庭联产承包责任制的实施极大释放了农业生产力。这一时期，云南农业以种植业为主导，农业产值占比超过65%。粮食产量从864万吨增长到1060万吨，基本解决了温饱问题。',
-    highlight: '农业总产值从40亿元增长到212亿元，年均增长14.3%'
-  },
-  {
-    id: 'market',
-    title: '市场化转型：1990-2000',
-    period: '1990-2000',
-    content: '社会主义市场经济体制确立后，云南农业开始向商品化、产业化方向发展。烟草、蔗糖、茶叶等经济作物成为重要支柱产业，畜牧业快速发展，产值比重显著提升。',
-    highlight: '畜牧业产值占比从25.5%上升到29.5%，成为第二大产业'
-  },
-  {
-    id: 'modern',
-    title: '特色发展：2000-2015',
-    period: '2000-2015',
-    content: '云南确立"高原特色农业"发展战略，蔬菜、水果、花卉、咖啡、中药材等特色产业蓬勃发展。农业产业结构持续优化，农业占比下降，牧业和林业比重上升。',
-    highlight: '蔬菜产量突破2000万吨，花卉产业成为全国第一'
-  },
-  {
-    id: 'newera',
-    title: '高质量发展：2015-2024',
-    period: '2015-2024',
-    content: '进入新时代，云南农业聚焦"绿色食品牌"，打造世界一流"绿色食品"。茶叶、花卉、蔬菜、水果、坚果、咖啡、中药材等八大重点产业全产业链升级，鲜切花产量突破200亿枝，成为全球重要花卉供应基地。',
-    highlight: '2024年农业总产值突破4000亿元，高原特色农业品牌价值凸显'
-  }
-];
-
-</script>
-    <script>
-// ============================================
-// 全局图表注册表 - 解决 display:none 初始化问题
-// ============================================
-const chartInstances = [];
-function registerChart(chart) {
-    chartInstances.push(chart);
-    return chart;
-}
-function resizeAllCharts() {
-    chartInstances.forEach(c => { try { c.resize(); } catch(e) {} });
-}
-
-// ============================================
-// 导航切换
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('.section');
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            const targetId = this.getAttribute('href').substring(1);
-            sections.forEach(s => s.classList.remove('active'));
-            document.getElementById(targetId).classList.add('active');
-            // 多次 resize 确保图表正确渲染
-            setTimeout(resizeAllCharts, 50);
-            setTimeout(resizeAllCharts, 200);
-            setTimeout(resizeAllCharts, 500);
-        });
-    });
-
-    // 初始化所有图表
-    initOverviewChart();
-    initTrendCharts();
-    initStructureCharts();
-    initProductCharts();
-    initRegionCharts();
-    initMapCharts();
-    initStoryCharts();
-
-    // 初始 resize
-    setTimeout(resizeAllCharts, 100);
-    setTimeout(resizeAllCharts, 500);
-});
-
-window.addEventListener('resize', () => {
-    setTimeout(resizeAllCharts, 100);
-});
-
-// ============================================
-// 1. 概览 - 总产值趋势
-// ============================================
-function initOverviewChart() {
-    const chart = registerChart(echarts.init(document.getElementById('overview-line')));
-    const years = outputValueData.map(d => d.year);
-    chart.setOption({
-        title: { text: '农林牧渔业总产值变化（1978-2024）', left: 'center', textStyle: { fontSize: 16 } },
-        tooltip: { trigger: 'axis', formatter: function(params) {
-            let s = params[0].axisValue + '年<br/>';
-            params.forEach(p => { s += p.marker + p.seriesName + ': ' + p.value + ' 亿元<br/>'; });
-            return s;
-        }},
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
-        grid: { left: 70, right: 30, top: 60, bottom: 50 },
-        xAxis: { type: 'category', data: years, axisLabel: { formatter: '{value}年' } },
-        yAxis: { type: 'value', name: '亿元', axisLabel: { formatter: '{value}' } },
-        series: [
-            { name: '农业', type: 'line', data: outputValueData.map(d => d.agriculture), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'line', data: outputValueData.map(d => d.forestry), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'line', data: outputValueData.map(d => d.animal), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'line', data: outputValueData.map(d => d.fishery), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#ee6666' } }
-        ]
-    });
-}
-
-// ============================================
-// 2. 产值趋势
-// ============================================
-function initTrendCharts() {
-    // 1. 分项产值趋势
-    const trendChart = registerChart(echarts.init(document.getElementById('trend-line')));
-    const years = outputValueData.map(d => d.year);
-    trendChart.setOption({
-        title: { text: '各产业产值变化趋势（1978-2024）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
-        grid: { left: 70, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: years, axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: { type: 'value', name: '亿元' },
-        series: [
-            { name: '农业', type: 'line', data: outputValueData.map(d => d.agriculture), smooth: true, symbolSize: 4, itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'line', data: outputValueData.map(d => d.forestry), smooth: true, symbolSize: 4, itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'line', data: outputValueData.map(d => d.animal), smooth: true, symbolSize: 4, itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'line', data: outputValueData.map(d => d.fishery), smooth: true, symbolSize: 4, itemStyle: { color: '#ee6666' } }
-        ]
-    });
-
-    // 2. 产值指数趋势
-    const indexChart = registerChart(echarts.init(document.getElementById('index-line')));
-    const indexYears = outputIndexData.map(d => d.year);
-    indexChart.setOption({
-        title: { text: '产值指数趋势（上年=100）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis', formatter: function(params) {
-            let s = params[0].axisValue + '年<br/>';
-            params.forEach(p => { s += p.marker + p.seriesName + ': ' + p.value + '<br/>'; });
-            return s;
-        }},
-        legend: { bottom: 0 },
-        grid: { left: 60, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: indexYears, axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: { type: 'value', name: '指数', min: 90, max: 115,
-            axisLabel: { formatter: '{value}' } },
-        series: [
-            { name: '总产值指数', type: 'line', data: outputIndexData.map(d => d.total), smooth: true, markLine: { data: [{ yAxis: 100, label: { formatter: '基准线100' } }] }, itemStyle: { color: '#5470c6' } },
-            { name: '农业指数', type: 'line', data: outputIndexData.map(d => d.agriculture), smooth: true, itemStyle: { color: '#91cc75' } },
-            { name: '林业指数', type: 'line', data: outputIndexData.map(d => d.forestry), smooth: true, itemStyle: { color: '#fac858' } },
-            { name: '牧业指数', type: 'line', data: outputIndexData.map(d => d.animal), smooth: true, itemStyle: { color: '#ee6666' } },
-            { name: '渔业指数', type: 'line', data: outputIndexData.map(d => d.fishery), smooth: true, itemStyle: { color: '#73c0de' } }
-        ]
-    });
-
-    // 粮食产量
-    const grainChart = registerChart(echarts.init(document.getElementById('grain-line')));
-    grainChart.setOption({
-        title: { text: '粮食产量变化趋势（1978-2024）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 0, data: ['粮食产量','播种面积'] },
-        grid: { left: 70, right: 70, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: grainData.map(d => d.year), axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: [
-            { type: 'value', name: '万吨', position: 'left' },
-            { type: 'value', name: '千公顷', position: 'right' }
-        ],
-        series: [
-            { name: '粮食产量', type: 'bar', data: grainData.map(d => d.output), itemStyle: { color: '#fac858' }, barMaxWidth: 20 },
-            { name: '播种面积', type: 'line', yAxisIndex: 1, data: grainData.map(d => d.area), smooth: true, itemStyle: { color: '#91cc75' } }
-        ]
-    });
-}
-
-// ============================================
-// 3. 产业结构
-// ============================================
-let pieChartInstance = null;
-function initStructureCharts() {
-    // 3. 年度结构饼图
-    pieChartInstance = registerChart(echarts.init(document.getElementById('structure-pie')));
-    updatePie(2024);
-
-    // 年份滑块
-    const slider = document.getElementById('year-slider');
-    const display = document.getElementById('year-display');
-    slider.addEventListener('input', function() {
-        const year = parseInt(this.value);
-        display.textContent = year + '年';
-        updatePie(year);
-    });
-
-    // 4. 产业构成变化柱状图
-    const barChart = registerChart(echarts.init(document.getElementById('structure-bar')));
-    const years = outputValueData.map(d => d.year);
-    barChart.setOption({
-        title: { text: '产业构成变化柱状图', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
-        grid: { left: 70, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: years, axisLabel: { formatter: '{value}年', rotate: 45, interval: 4 } },
-        yAxis: { type: 'value', name: '亿元' },
-        series: [
-            { name: '农业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.animal), itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'bar', stack: 'total', data: outputValueData.map(d => d.fishery), itemStyle: { color: '#ee6666' } }
-        ]
-    });
-
-    // 占比趋势
-    const pctChart = registerChart(echarts.init(document.getElementById('structure-percent')));
-    const pctYears = outputValueData.map(d => d.year);
-    const agriPct = outputValueData.map(d => +((d.agriculture / d.total) * 100).toFixed(1));
-    const forestPct = outputValueData.map(d => +((d.forestry / d.total) * 100).toFixed(1));
-    const animalPct = outputValueData.map(d => +((d.animal / d.total) * 100).toFixed(1));
-    const fishPct = outputValueData.map(d => +((d.fishery / d.total) * 100).toFixed(1));
-    pctChart.setOption({
-        title: { text: '各产业产值占比变化趋势', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis', formatter: function(params) {
-            let s = params[0].axisValue + '年<br/>';
-            params.forEach(p => { s += p.marker + p.seriesName + ': ' + p.value + '%<br/>'; });
-            return s;
-        }},
-        legend: { bottom: 0 },
-        grid: { left: 60, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: pctYears, axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: { type: 'value', name: '%', max: 100, axisLabel: { formatter: '{value}%' } },
-        series: [
-            { name: '农业占比', type: 'line', data: agriPct, smooth: true, areaStyle: { opacity: 0.5 }, itemStyle: { color: '#5470c6' } },
-            { name: '林业占比', type: 'line', data: forestPct, smooth: true, areaStyle: { opacity: 0.5 }, itemStyle: { color: '#91cc75' } },
-            { name: '牧业占比', type: 'line', data: animalPct, smooth: true, areaStyle: { opacity: 0.5 }, itemStyle: { color: '#fac858' } },
-            { name: '渔业占比', type: 'line', data: fishPct, smooth: true, areaStyle: { opacity: 0.5 }, itemStyle: { color: '#ee6666' } }
-        ]
-    });
-}
-
-function updatePie(year) {
-    if (!pieChartInstance) return;
-    const item = outputValueData.find(d => d.year === year);
-    if (!item) return;
-    pieChartInstance.setOption({
-        title: { text: year + '年产业产值结构', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'item', formatter: '{b}: {c}亿元 ({d}%)' },
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
-        series: [{
-            type: 'pie', radius: ['30%', '60%'], center: ['50%', '50%'],
-            label: { formatter: '{b}\n{d}%', fontSize: 13 },
-            data: [
-                { value: item.agriculture, name: '农业', itemStyle: { color: '#5470c6' } },
-                { value: item.forestry, name: '林业', itemStyle: { color: '#91cc75' } },
-                { value: item.animal, name: '牧业', itemStyle: { color: '#fac858' } },
-                { value: item.fishery, name: '渔业', itemStyle: { color: '#ee6666' } }
-            ]
-        }]
-    }, true);
-}
-
-// ============================================
-// 4. 农产品产量
-// ============================================
-function initProductCharts() {
-    const barChart = registerChart(echarts.init(document.getElementById('products-bar')));
-    const years = mainProductsData.map(d => d.year);
-    barChart.setOption({
-        title: { text: '主要农产品产量变化', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 0 },
-        grid: { left: 70, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: years, axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: { type: 'value', name: '万吨' },
-        series: [
-            { name: '粮食', type: 'bar', data: mainProductsData.map(d => d.grain), itemStyle: { color: '#fac858' } },
-            { name: '油料', type: 'bar', data: mainProductsData.map(d => d.oil), itemStyle: { color: '#91cc75' } },
-            { name: '糖料', type: 'bar', data: mainProductsData.map(d => d.sugar), itemStyle: { color: '#ee6666' } },
-            { name: '茶叶', type: 'bar', data: mainProductsData.map(d => d.tea), itemStyle: { color: '#5470c6' } },
-            { name: '烤烟', type: 'bar', data: mainProductsData.map(d => d.tobacco), itemStyle: { color: '#73c0de' } }
-        ]
-    });
-
-    const lineChart = registerChart(echarts.init(document.getElementById('specialty-line')));
-    lineChart.setOption({
-        title: { text: '高原特色农产品产量趋势（2015-2024）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 0 },
-        grid: { left: 70, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: specialtyData.map(d => d.year), axisLabel: { formatter: '{value}年' } },
-        yAxis: { type: 'value', name: '万吨/亿枝' },
-        series: [
-            { name: '蔬菜', type: 'line', data: specialtyData.map(d => d.vegetables), smooth: true, itemStyle: { color: '#91cc75' } },
-            { name: '水果', type: 'line', data: specialtyData.map(d => d.fruits), smooth: true, itemStyle: { color: '#fac858' } },
-            { name: '茶叶', type: 'line', data: specialtyData.map(d => d.tea), smooth: true, itemStyle: { color: '#5470c6' } },
-            { name: '鲜切花', type: 'line', data: specialtyData.map(d => d.flowers), smooth: true, itemStyle: { color: '#ee6666' } },
-            { name: '坚果', type: 'line', data: specialtyData.map(d => d.nuts), smooth: true, itemStyle: { color: '#73c0de' } }
-        ]
-    });
-}
-
-// ============================================
-// 5. 州市对比
-// ============================================
-function initRegionCharts() {
-    // 5. 州市产值排名
-    const barChart = registerChart(echarts.init(document.getElementById('region-bar')));
-    const sorted = [...prefectureData].sort((a, b) => a.total - b.total);
-    barChart.setOption({
-        title: { text: '各州市农林牧渔总产值排名（2024年）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, formatter: function(params) {
-            let s = params[0].name + '<br/>';
-            params.forEach(p => { s += p.marker + p.seriesName + ': ' + p.value + ' 亿元<br/>'; });
-            return s;
-        }},
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业','辅助服务'] },
-        grid: { left: 100, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'value', name: '亿元' },
-        yAxis: { type: 'category', data: sorted.map(d => d.name) },
-        series: [
-            { name: '农业', type: 'bar', stack: 'total', data: sorted.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'bar', stack: 'total', data: sorted.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'bar', stack: 'total', data: sorted.map(d => d.animal), itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'bar', stack: 'total', data: sorted.map(d => d.fishery), itemStyle: { color: '#ee6666' } },
-            { name: '辅助服务', type: 'bar', stack: 'total', data: sorted.map(d => d.service), itemStyle: { color: '#73c0de' } }
-        ]
-    });
-
-    // 6. 气泡图
-    const bubbleChart = registerChart(echarts.init(document.getElementById('region-bubble')));
-    bubbleChart.setOption({
-        title: { text: '各州市产业构成气泡图', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'item', formatter: function(p) {
-            return p.data[3] + '<br/>农业占比: ' + p.data[0] + '%<br/>牧业占比: ' + p.data[1] + '%<br/>总产值: ' + p.data[2] + '亿元';
-        }},
-        grid: { left: 70, right: 30, top: 60, bottom: 50 },
-        xAxis: { name: '农业占比(%)', nameLocation: 'center', nameGap: 30 },
-        yAxis: { name: '牧业占比(%)', nameLocation: 'center', nameGap: 40 },
-        series: [{
-            type: 'scatter', symbolSize: function(d) { return Math.sqrt(d[2]) * 2; },
-            data: prefectureData.map(d => {
-                const agriPct = +((d.agriculture / d.total) * 100).toFixed(1);
-                const animalPct = +((d.animal / d.total) * 100).toFixed(1);
-                return [agriPct, animalPct, d.total, d.name];
-            }),
-            label: { show: true, formatter: function(p) { return p.data[3].replace('市','').replace('州',''); }, fontSize: 10 },
-            itemStyle: { color: '#5470c6', opacity: 0.7 }
-        }]
-    });
-
-    // 7. 各州市产值构成（堆叠柱状图）
-    const compChart = registerChart(echarts.init(document.getElementById('region-composition')));
-    const names = prefectureData.map(d => d.name);
-    compChart.setOption({
-        title: { text: '各州市产值构成（2024年）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业','辅助服务'] },
-        grid: { left: 100, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: names, axisLabel: { rotate: 45, fontSize: 11 } },
-        yAxis: { type: 'value', name: '亿元' },
-        series: [
-            { name: '农业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.agriculture), itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.forestry), itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.animal), itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'bar', stack: 'total', data: prefectureData.map(d => d.fishery), itemStyle: { color: '#ee6666' } },
-            { name: '辅助服务', type: 'bar', stack: 'total', data: prefectureData.map(d => d.service), itemStyle: { color: '#73c0de' } }
-        ]
-    });
-
-    // 雷达图
-    const radarChart = registerChart(echarts.init(document.getElementById('region-radar')));
-    const topCities = ['昆明市','曲靖市','红河州','大理州','昭通市'];
-    const radarColors = ['#5470c6','#91cc75','#fac858','#ee6666','#73c0de'];
-    radarChart.setOption({
-        title: { text: '各州市产业结构对比（雷达图）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: {},
-        legend: { bottom: 0, data: topCities },
-        radar: {
-            indicator: [
-                { name: '农业占比', max: 80 },
-                { name: '林业占比', max: 30 },
-                { name: '牧业占比', max: 50 },
-                { name: '渔业占比', max: 10 },
-                { name: '辅助服务占比', max: 10 }
-            ],
-            center: ['50%', '50%'],
-            radius: '60%'
-        },
-        series: [{
-            type: 'radar',
-            data: topCities.map((city, i) => {
-                const d = prefectureData.find(p => p.name === city);
-                return {
-                    name: city,
-                    value: [
-                        +((d.agriculture / d.total) * 100).toFixed(1),
-                        +((d.forestry / d.total) * 100).toFixed(1),
-                        +((d.animal / d.total) * 100).toFixed(1),
-                        +((d.fishery / d.total) * 100).toFixed(1),
-                        +((d.service / d.total) * 100).toFixed(1)
-                    ],
-                    lineStyle: { color: radarColors[i] },
-                    itemStyle: { color: radarColors[i] },
-                    areaStyle: { color: radarColors[i], opacity: 0.2 }
-                };
-            })
-        }]
-    });
-}
-
-// ============================================
-// 6. 云南省地图
-// ============================================
-function initMapCharts() {
-    // 使用 DataV GeoJSON 加载云南省地图
-    fetch('https://geo.datav.aliyun.com/areas_v3/bound/530000_full.json')
-        .then(r => r.json())
-        .then(geoJson => {
-            echarts.registerMap('yunnan', geoJson);
-            initFilledMap();
-            initScatterMap();
-        })
-        .catch(err => {
-            console.error('地图数据加载失败，使用备用方案', err);
-            initFallbackMap();
-        });
-}
-
-function initFilledMap() {
-    const chart = registerChart(echarts.init(document.getElementById('yunnan-map')));
-    const mapData = prefectureData.map(d => ({
-        name: d.name,
-        value: d.total
-    }));
-    chart.setOption({
-        title: { text: '云南省各州市农林牧渔总产值（2024年）', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: {
-            trigger: 'item',
-            formatter: function(p) {
-                if (p.data && p.data.value !== undefined) {
-                    return p.name + '<br/>总产值: ' + p.data.value + ' 亿元';
-                }
-                return p.name;
-            }
-        },
-        visualMap: {
-            min: 100, max: 850, left: 'left', top: 'bottom',
-            text: ['高', '低'],
-            inRange: { color: ['#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695'] },
-            calculable: true
-        },
-        series: [{
-            type: 'map', map: 'yunnan', roam: true,
-            label: { show: true, fontSize: 11, color: '#333' },
-            emphasis: {
-                label: { show: true, fontSize: 14, fontWeight: 'bold' },
-                itemStyle: { areaColor: '#fdda76' }
-            },
-            data: mapData
-        }]
-    });
-}
-
-function initScatterMap() {
-    const chart = registerChart(echarts.init(document.getElementById('yunnan-scatter')));
-    // 各州市中心坐标（近似）
-    const coords = {
-        '昆明市': [102.83, 25.02], '曲靖市': [103.80, 25.50],
-        '玉溪市': [102.54, 24.35], '保山市': [99.17, 25.12],
-        '昭通市': [103.72, 27.34], '丽江市': [100.23, 26.86],
-        '普洱市': [100.97, 22.78], '临沧市': [100.09, 23.88],
-        '楚雄州': [101.55, 25.03], '红河州': [103.38, 23.37],
-        '文山州': [104.24, 23.37], '西双版纳州': [100.80, 22.01],
-        '大理州': [100.24, 25.59], '德宏州': [98.58, 24.44],
-        '怒江州': [98.86, 25.85], '迪庆州': [99.71, 27.83]
-    };
-    const scatterData = prefectureData.map(d => ({
-        name: d.name,
-        value: [...(coords[d.name] || [100, 25]), d.total]
-    }));
-    chart.setOption({
-        title: { text: '各州市农业产值地理分布', left: 'center', textStyle: { fontSize: 15 } },
-        tooltip: { trigger: 'item', formatter: function(p) {
-            return p.name + '<br/>总产值: ' + p.value[2] + ' 亿元';
-        }},
-        geo: {
-            map: 'yunnan', roam: true,
-            itemStyle: { areaColor: '#f0f0f0', borderColor: '#999' },
-            emphasis: { itemStyle: { areaColor: '#ddd' } },
-            label: { show: false }
-        },
-        series: [{
-            type: 'effectScatter', coordinateSystem: 'geo',
-            data: scatterData,
-            symbolSize: function(val) { return Math.sqrt(val[2]) / 3; },
-            showEffectOn: 'render',
-            rippleEffect: { brushType: 'stroke', scale: 3 },
-            label: { show: true, formatter: '{b}', position: 'right', fontSize: 10 },
-            itemStyle: { color: '#e44646', shadowBlur: 10, shadowColor: 'rgba(228,70,70,0.5)' }
-        }]
-    });
-}
-
-function initFallbackMap() {
-    // 备用方案：如果 GeoJSON 加载失败，用表格展示
-    const mapDiv = document.getElementById('yunnan-map');
-    if (mapDiv) {
-        mapDiv.style.display = 'flex';
-        mapDiv.style.alignItems = 'center';
-        mapDiv.style.justifyContent = 'center';
-        mapDiv.innerHTML = '<div style="text-align:center;padding:40px;"><h3>地图数据加载中...</h3><p>如长时间无法加载，请检查网络连接</p></div>';
-    }
-    const scatterDiv = document.getElementById('yunnan-scatter');
-    if (scatterDiv) {
-        const chart = registerChart(echarts.init(scatterDiv));
-        chart.setOption({
-            title: { text: '各州市农业产值', left: 'center' },
-            tooltip: { trigger: 'axis' },
-            grid: { left: 100, right: 30, top: 50, bottom: 30 },
-            xAxis: { type: 'value', name: '亿元' },
-            yAxis: { type: 'category', data: prefectureData.map(d => d.name) },
-            series: [{ type: 'bar', data: prefectureData.map(d => d.total), itemStyle: { color: '#5470c6' } }]
-        });
-    }
-}
-
-// ============================================
-// 7. 数据故事
-// ============================================
-let storyChartInstance = null;
-function initStoryCharts() {
-    // 故事导航
-    const nodesContainer = document.getElementById('story-nodes');
-    const contentContainer = document.getElementById('story-content');
-    storyChartInstance = registerChart(echarts.init(document.getElementById('story-chart')));
-
-    storyNodes.forEach((node, i) => {
-        const div = document.createElement('div');
-        div.className = 'timeline-node' + (i === 0 ? ' active' : '');
-        div.innerHTML = '<div class="node-dot"></div><div class="node-label">' + node.period + '</div>';
-        div.addEventListener('click', () => showStory(i));
-        nodesContainer.appendChild(div);
-    });
-    showStory(0);
-}
-
-function showStory(index) {
-    const node = storyNodes[index];
-    const content = document.getElementById('story-content');
-    content.innerHTML = '<h3>' + node.title + '</h3><p class="period">' + node.period + '</p><p>' + node.content + '</p><div class="highlight">' + node.highlight + '</div>';
-
-    document.querySelectorAll('.timeline-node').forEach((n, i) => {
-        n.classList.toggle('active', i === index);
-    });
-
-    // 根据故事节点显示对应图表
-    const startYear = parseInt(node.period.split('-')[0]);
-    const endYear = parseInt(node.period.split('-')[1]);
-    const filtered = outputValueData.filter(d => d.year >= startYear && d.year <= endYear);
-    const years = filtered.map(d => d.year);
-
-    if (!storyChartInstance) return;
-    storyChartInstance.setOption({
-        title: { text: node.period + ' 产值变化', left: 'center', textStyle: { fontSize: 14 } },
-        tooltip: { trigger: 'axis' },
-        legend: { bottom: 0, data: ['农业','林业','牧业','渔业'] },
-        grid: { left: 70, right: 30, top: 50, bottom: 50 },
-        xAxis: { type: 'category', data: years, axisLabel: { formatter: '{value}年', rotate: 45 } },
-        yAxis: { type: 'value', name: '亿元' },
-        series: [
-            { name: '农业', type: 'line', data: filtered.map(d => d.agriculture), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#5470c6' } },
-            { name: '林业', type: 'line', data: filtered.map(d => d.forestry), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#91cc75' } },
-            { name: '牧业', type: 'line', data: filtered.map(d => d.animal), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#fac858' } },
-            { name: '渔业', type: 'line', data: filtered.map(d => d.fishery), smooth: true, areaStyle: { opacity: 0.3 }, itemStyle: { color: '#ee6666' } }
-        ]
-    }, true);
-}
-
-</script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
